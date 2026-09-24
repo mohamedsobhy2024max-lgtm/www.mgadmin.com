@@ -1,0 +1,2 @@
+# www.mgadmin.com
+admin
