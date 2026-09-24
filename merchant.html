@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MG Store — متابعة النشاط</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--navy:#0b1530;--blue:#2f6fed;--green:#16a34a;--orange:#f59e0b;--red:#e11d48;--bg:#f4f6fb;--card:#fff;--ink:#101a33;--soft:#5b6478;--line:#e7ebf3}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1530;--card:#15264d;--ink:#eef2ff;--soft:#aab4d1;--line:#26365f}}
+:root[data-theme="dark"]{--bg:#0b1530;--card:#15264d;--ink:#eef2ff;--soft:#aab4d1;--line:#26365f}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+input,button{font:inherit;width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);text-align:center}
+button{cursor:pointer;border:0;font-weight:700;background:var(--blue);color:#fff;margin-top:10px}
+button.g{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+label{display:block;font-size:13px;color:var(--soft);margin:10px 0 4px}
+.err{color:var(--red);font-size:13px;text-align:center;margin-top:8px;min-height:16px;line-height:1.6}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--navy);padding:12px}
+#loginScreen .card{width:340px;max-width:100%;padding:26px;background:var(--card)}
+.logo{width:46px;height:46px;border-radius:10px;background:#8b5cf6;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+h1{font-size:17px;text-align:center;margin:0 0 14px}
+.rem{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--soft);margin-top:10px}
+.rem input{width:auto;margin:0}
+#app{display:none}
+.top{background:var(--navy);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.top .t{font-size:15px;font-weight:700}.top small{display:block;font-size:11px;color:#aab4d1;font-weight:400;margin-top:2px}
+.top .b{display:flex;gap:6px}
+.top button{width:auto;margin:0;padding:7px 12px;font-size:12px;background:transparent;border:1px solid #3b4a75}
+.wrap{max-width:900px;margin:0 auto;padding:12px}
+.banner{background:#fff4d6;color:#7a4b00;border:1px solid #f5d27a;border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:10px;line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px}
+@media(min-width:600px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 6px;text-align:center}
+.stat .v{font-size:18px;font-weight:700}.stat .l{color:var(--soft);font-size:11px;margin-top:3px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.tabs button{margin:0;background:var(--card);color:var(--ink);border:1px solid var(--line);padding:9px 4px;font-size:13px}
+.tabs button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chips{display:flex;gap:6px;margin-bottom:8px;overflow-x:auto}
+.chips button{width:auto;margin:0;padding:6px 12px;font-size:12px;background:var(--card);color:var(--ink);border:1px solid var(--line);white-space:nowrap}
+.chips button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.sale{cursor:pointer}
+.sh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.sh b{font-size:15px}.sh small{display:block;color:var(--soft);font-size:12px;margin-top:2px}
+.amt{font-size:16px;font-weight:700;white-space:nowrap}
+.badge{padding:2px 8px;border-radius:99px;color:#fff;font-size:11px;white-space:nowrap}
+.ok{background:var(--green)}.warn{background:var(--orange)}.bad{background:var(--red)}.na{background:var(--soft)}
+.items{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px;font-size:13px}
+.items .r{display:flex;justify-content:space-between;gap:8px;padding:3px 0}
+.items .r span:last-child{white-space:nowrap}
+.sec{font-weight:700;font-size:14px;margin:4px 0 8px}
+.row{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.row:last-child{border-bottom:0}.row small{display:block;color:var(--soft);font-size:11px;margin-top:2px}
+.row .n{font-weight:700;white-space:nowrap}
+.empty{text-align:center;color:var(--soft);padding:22px;font-size:13px}
+.tot{display:flex;justify-content:space-between;font-size:12px;color:var(--soft);margin-top:6px}
+.panel{display:none}.panel.on{display:block}
+</style>
+</head>
+<body>
+
+<div id="loginScreen"><div class="card">
+  <div class="logo">MG</div>
+  <h1>متابعة النشاط</h1>
+  <label>اسم المستخدم</label><input id="user" autocomplete="username" style="direction:ltr">
+  <label>الباسورد</label><input id="pass" type="password" autocomplete="current-password" style="direction:ltr">
+  <div class="rem"><input type="checkbox" id="remember"><label for="remember" style="margin:0">تذكّرني على الجهاز ده</label></div>
+  <button id="loginBtn">دخول</button><div class="err" id="loginErr"></div>
+</div></div>
+
+<div id="app">
+  <div class="top">
+    <div class="t"><span id="storeName">-</span><small id="lastSeen"></small></div>
+    <div class="b"><button id="refreshBtn">🔄</button><button id="logoutBtn">خروج</button></div>
+  </div>
+  <div class="wrap">
+    <div id="banner"></div>
+    <div class="stats" id="stats"></div>
+    <div class="card"><div class="sec">صافي المبيعات آخر 30 يوم</div><div id="chart"></div><div class="tot" id="chartTot"></div></div>
+
+    <div class="tabs" id="tabs">
+      <button data-t="sales" class="on">🧾 المبيعات</button>
+      <button data-t="products">📦 المنتجات</button>
+      <button data-t="activity">📋 النشاط</button>
+    </div>
+
+    <div class="panel on" id="p-sales">
+      <div class="chips" id="chips">
+        <button data-r="today" class="on">النهارده</button><button data-r="7">7 أيام</button>
+        <button data-r="30">30 يوم</button><button data-r="all">الكل</button>
+      </div>
+      <input id="q" placeholder="ابحث برقم الفاتورة أو الكاشير أو العميل" style="margin-bottom:8px">
+      <div id="salesSum" class="tot" style="margin:0 2px 8px"></div>
+      <div id="salesList"></div>
+    </div>
+
+    <div class="panel" id="p-products">
+      <div class="card"><div class="sec">🔥 الأكثر مبيعاً (آخر 30 يوم)</div><div id="topList"></div></div>
+      <div class="card"><div class="sec">⚠️ مخزون منخفض</div><div id="lowList"></div></div>
+      <div class="card"><div class="sec">🐌 راكد (ماتباعش من 30 يوم)</div><div id="stagList"></div></div>
+      <input id="pq" placeholder="ابحث في كل المنتجات" style="margin-bottom:8px">
+      <div class="card" id="allProducts"></div>
+    </div>
+
+    <div class="panel" id="p-activity"><div class="card" id="actList"></div></div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://ndvpovppevjslszplxbu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kdnBvdnBwZXZqc2xzenBseGJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMzk2MjAsImV4cCI6MjEwNTYxNTYyMH0.T1FCyNnzISfAQjvRvUagRsv8ecLqM9CDAeEc6IpLAGg";
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => Number(n || 0).toLocaleString("ar-EG", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const fmt0 = n => Number(n || 0).toLocaleString("ar-EG", {maximumFractionDigits: 0});
+const fmtDT = iso => { if(!iso) return "-"; try { return new Date(iso).toLocaleString("ar-EG", {month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit"}); } catch(e){ return iso; } };
+const fmtD = iso => { if(!iso) return "-"; try { return new Date(iso).toLocaleDateString("ar-EG", {year:"numeric", month:"2-digit", day:"2-digit"}); } catch(e){ return iso; } };
+
+let creds = null, data = null, tab = "sales", range = "today", openSale = null, timer = null;
+
+async function rpc(fn, payload){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {method: "POST",
+    headers: {"Content-Type": "application/json", "apikey": SUPABASE_ANON_KEY, "Authorization": `Bearer ${SUPABASE_ANON_KEY}`},
+    body: JSON.stringify(payload)});
+  return res.json();
+}
+
+const ymdLocal = d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const saleDay = s => ymdLocal(new Date(s.sale_date));
+const isCancelled = s => String(s.status || "").includes("ملغ");
+const net = s => isCancelled(s) ? 0 : Number(s.total || 0) - Number(s.returned_total || 0);
+const daysLeft = iso => iso ? Math.round((new Date(iso + "T23:59:59") - new Date()) / 864e5) : null;
+
+function showLogin(msg){
+  $("app").style.display = "none"; $("loginScreen").style.display = "flex";
+  $("loginErr").textContent = msg || "";
+  if(timer){ clearInterval(timer); timer = null; }
+}
+
+async function doLogin(){
+  const u = $("user").value.trim(), p = $("pass").value;
+  if(!u || !p){ $("loginErr").textContent = "اكتب اسم المستخدم والباسورد"; return; }
+  const btn = $("loginBtn"); btn.disabled = true; btn.textContent = "جاري الدخول...";
+  $("loginErr").textContent = "";
+  creds = {u, p};
+  const ok = await load(false);
+  btn.disabled = false; btn.textContent = "دخول";
+  if(ok){
+    try { if($("remember").checked) localStorage.setItem("mg_m", JSON.stringify(creds)); else localStorage.removeItem("mg_m"); } catch(e) {}
+    $("loginScreen").style.display = "none"; $("app").style.display = "block";
+    if(!timer) timer = setInterval(() => { if(document.visibilityState !== "hidden") load(true); }, 60000);
+  }
+}
+
+async function load(silent){
+  let r;
+  try { r = await rpc("get_dashboard_full", {p_username: creds.u, p_password: creds.p, p_limit: 500}); }
+  catch(e){ if(!silent) $("loginErr").textContent = "تعذّر الاتصال — اتأكد من الإنترنت"; return false; }
+  if(!r || !r.ok){
+    const msg = (r && r.error) || "بيانات الدخول غير صحيحة";
+    const store = r && r.store_name ? "(" + r.store_name + ") " : "";
+    try { if(r && r.expired === undefined) localStorage.removeItem("mg_m"); } catch(e) {}
+    if(silent) showLogin(store + msg); else $("loginErr").textContent = store + msg;
+    return false;
+  }
+  data = r; render(); return true;
+}
+
+function badgeFor(s){
+  const st = String(s.status || "");
+  const cls = st.includes("ملغ") ? "bad" : (st.includes("مرتج") || Number(s.returned_total) > 0 ? "warn" : "ok");
+  return `<span class="badge ${cls}">${esc(st || "-")}</span>`;
+}
+
+function render(){
+  if(!data) return;
+  $("storeName").textContent = data.store_name || "-";
+  $("lastSeen").textContent = "آخر مزامنة: " + fmtDT(data.last_seen_at);
+
+  const dl = daysLeft(data.license_expiry);
+  $("banner").innerHTML = dl !== null && dl <= 7
+    ? `<div class="banner">⏳ اشتراك المتابعة الأونلاين ${dl <= 0 ? "بينتهي النهارده" : "هيخلص بعد " + dl + " يوم"} (${esc(data.license_expiry)}) — كلّم صاحب البرنامج للتجديد.</div>` : "";
+
+  const sales = data.sales || [], today = ymdLocal(new Date());
+  const todays = sales.filter(s => saleDay(s) === today && !isCancelled(s));
+  const list = filtered();
+  const periodNet = list.reduce((a, s) => a + net(s), 0), periodN = list.filter(s => !isCancelled(s)).length;
+  $("stats").innerHTML = [
+    ["مبيعات النهارده", fmt(data.today_total)], ["فواتير النهارده", fmt0(todays.length)],
+    ["صافي الفترة المختارة", fmt(periodNet)], ["متوسط الفاتورة", fmt(periodN ? periodNet / periodN : 0)]
+  ].map(s => `<div class="stat"><div class="v">${s[1]}</div><div class="l">${s[0]}</div></div>`).join("");
+
+  drawChart(); renderSales(list); renderProducts(); renderActivity();
+}
+
+function drawChart(){
+  const d = data.daily_sales || [];
+  if(!d.length){ $("chart").innerHTML = `<div class="empty">لا توجد بيانات</div>`; $("chartTot").innerHTML = ""; return; }
+  const max = Math.max(1, ...d.map(x => Number(x.net) || 0)), w = 300 / d.length;
+  const bars = d.map((x, i) => {
+    const h = Math.max(1, (Number(x.net) || 0) / max * 80);
+    return `<rect x="${(i * w + 1).toFixed(1)}" y="${(88 - h).toFixed(1)}" width="${(w - 2).toFixed(1)}" height="${h.toFixed(1)}" rx="2" fill="var(--blue)" opacity="${i === d.length - 1 ? 1 : .55}"><title>${esc(x.d)}: ${fmt(x.net)}</title></rect>`;
+  }).join("");
+  $("chart").innerHTML = `<svg viewBox="0 0 300 92" width="100%" height="110" preserveAspectRatio="none">${bars}</svg>`;
+  const total = d.reduce((a, x) => a + (Number(x.net) || 0), 0);
+  $("chartTot").innerHTML = `<span>الإجمالي: ${fmt(total)}</span><span>أعلى يوم: ${fmt(max)}</span>`;
+}
+
+function filtered(){
+  const q = $("q").value.trim().toLowerCase();
+  const now = new Date(); let from = null;
+  if(range === "today") from = ymdLocal(now);
+  else if(range !== "all"){ const d = new Date(now); d.setDate(d.getDate() - (parseInt(range, 10) - 1)); from = ymdLocal(d); }
+  return (data.sales || []).filter(s => (!from || saleDay(s) >= from) &&
+    (!q || (String(s.number || "") + " " + (s.cashier || "") + " " + (s.customer_name || "")).toLowerCase().includes(q)));
+}
+
+function renderSales(list){
+  const live = list.filter(s => !isCancelled(s));
+  $("salesSum").innerHTML = `<span>${fmt0(list.length)} فاتورة</span><span>صافي: ${fmt(live.reduce((a, s) => a + net(s), 0))}</span>`;
+  if(!list.length){ $("salesList").innerHTML = `<div class="empty">مفيش فواتير في الفترة دي</div>`; return; }
+  const items = data.sale_items || [];
+  $("salesList").innerHTML = list.slice(0, 200).map(s => {
+    const open = openSale === s.local_sale_id;
+    const its = open ? items.filter(i => i.local_sale_id === s.local_sale_id) : [];
+    const meta = [s.cashier && "👤 " + s.cashier, s.customer_name && "🧑 " + s.customer_name, s.payment_method, s.table_no && "طاولة " + s.table_no].filter(Boolean).map(esc).join(" · ");
+    return `<div class="card sale" onclick="toggleSale(${Number(s.local_sale_id)})">
+      <div class="sh"><div><b>#${esc(s.number || s.local_sale_id)}</b> ${badgeFor(s)}<small>${fmtDT(s.sale_date)}</small><small>${meta}</small></div>
+        <div class="amt">${fmt(net(s) || (isCancelled(s) ? s.total : 0))}</div></div>
+      ${open ? `<div class="items">${its.length ? its.map(i => `<div class="r"><span>${esc(i.name)} × ${esc(i.qty)}</span><span>${fmt(Number(i.price) * Number(i.qty))}</span></div>`).join("") : `<div class="empty" style="padding:8px">مفيش تفاصيل للفاتورة دي</div>`}
+        ${Number(s.discount) > 0 ? `<div class="r"><span>خصم</span><span>-${fmt(s.discount)}</span></div>` : ""}
+        ${Number(s.returned_total) > 0 ? `<div class="r"><span>مرتجع</span><span>-${fmt(s.returned_total)}</span></div>` : ""}</div>` : ""}
+    </div>`;
+  }).join("") + (list.length > 200 ? `<div class="empty">بيظهر أول 200 فاتورة — حدّد فترة أصغر أو ابحث</div>` : "");
+}
+
+function renderProducts(){
+  const rows = (arr, f) => arr && arr.length ? arr.map(f).join("") : `<div class="empty">لا يوجد</div>`;
+  $("topList").innerHTML = rows(data.top_products, p => `<div class="row"><div>${esc(p.name)}<small>إيراد ${fmt(p.revenue)}</small></div><div class="n">${fmt0(p.qty)} قطعة</div></div>`);
+  $("lowList").innerHTML = rows(data.low_stock, p => `<div class="row"><div>${esc(p.name)}<small>${esc(p.category || "")} · الحد الأدنى ${esc(p.min_stock == null ? 5 : p.min_stock)}</small></div><div class="n" style="color:var(--red)">${fmt0(p.stock)}</div></div>`);
+  $("stagList").innerHTML = rows(data.stagnant_products, p => `<div class="row"><div>${esc(p.name)}<small>${p.last_sale_date ? "آخر بيع " + fmtD(p.last_sale_date) : "ماتباعش خالص"}</small></div><div class="n">${fmt0(p.stock)}</div></div>`);
+  const q = $("pq").value.trim().toLowerCase();
+  const all = (data.products || []).filter(p => !q || ((p.name || "") + " " + (p.category || "")).toLowerCase().includes(q));
+  $("allProducts").innerHTML = `<div class="sec">كل المنتجات (${fmt0(all.length)})</div>` +
+    rows(all.slice(0, 300), p => `<div class="row"><div>${esc(p.name)}<small>${esc(p.category || "")} · ${fmt(p.price)}</small></div><div class="n">${fmt0(p.stock)}</div></div>`);
+}
+
+function renderActivity(){
+  const a = data.activity || [];
+  $("actList").innerHTML = a.length ? a.map(x => `<div class="row"><div>${esc(x.action)}<small>${esc(x.details || "")}</small></div><div class="n" style="font-weight:400;color:var(--soft);font-size:11px">${fmtDT(x.logged_at)}</div></div>`).join("") : `<div class="empty">لا يوجد نشاط</div>`;
+}
+
+function toggleSale(id){ openSale = openSale === id ? null : id; renderSales(filtered()); }
+
+$("loginBtn").onclick = doLogin;
+$("pass").addEventListener("keydown", e => { if(e.key === "Enter") doLogin(); });
+$("refreshBtn").onclick = () => load(true);
+$("logoutBtn").onclick = () => { creds = null; data = null; try { localStorage.removeItem("mg_m"); } catch(e) {} showLogin(""); };
+$("q").addEventListener("input", () => render());
+$("pq").addEventListener("input", () => renderProducts());
+$("tabs").addEventListener("click", e => {
+  const t = e.target.getAttribute && e.target.getAttribute("data-t"); if(!t) return;
+  tab = t; document.querySelectorAll("#tabs button").forEach(b => b.className = b.getAttribute("data-t") === t ? "on" : "");
+  document.querySelectorAll(".panel").forEach(p => p.className = "panel" + (p.id === "p-" + t ? " on" : ""));
+});
+$("chips").addEventListener("click", e => {
+  const r = e.target.getAttribute && e.target.getAttribute("data-r"); if(!r) return;
+  range = r; document.querySelectorAll("#chips button").forEach(b => b.className = b.getAttribute("data-r") === r ? "on" : "");
+  render();
+});
+
+try {
+  const saved = JSON.parse(localStorage.getItem("mg_m") || "null");
+  if(saved && saved.u && saved.p){ $("user").value = saved.u; $("pass").value = saved.p; $("remember").checked = true; doLogin(); }
+} catch(e) {}
+</script>
+</body>
+</html>
