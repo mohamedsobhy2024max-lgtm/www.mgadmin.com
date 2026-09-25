@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MG Store — لوحة صاحب البرنامج</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--navy:#0b1530;--blue:#2f6fed;--green:#16a34a;--orange:#f59e0b;--red:#e11d48;--bg:#f4f6fb;--card:#fff;--ink:#101a33;--soft:#5b6478;--line:#e7ebf3}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1530;--card:#15264d;--ink:#eef2ff;--soft:#aab4d1;--line:#26365f}}
+:root[data-theme="dark"]{--bg:#0b1530;--card:#15264d;--ink:#eef2ff;--soft:#aab4d1;--line:#26365f}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+input,select,button{font:inherit;width:100%;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);text-align:center}
+button{cursor:pointer;border:0;font-weight:700;background:var(--blue);color:#fff;margin-top:10px}
+button.g{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+label{display:block;font-size:13px;color:var(--soft);margin:10px 0 4px}
+.err{color:var(--red);font-size:13px;text-align:center;margin-top:8px;min-height:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--navy);padding:12px}
+#loginScreen .card{width:340px;max-width:100%;padding:26px}
+.logo{width:46px;height:46px;border-radius:10px;background:#8b5cf6;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+h1{font-size:17px;text-align:center;margin:0 0 14px}
+#app{display:none}
+.top{background:var(--navy);color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.top div{font-size:14px;font-weight:700}.top .b{display:flex;gap:6px}
+.top button{width:auto;margin:0;padding:7px 12px;font-size:12px;background:transparent;border:1px solid #3b4a75}
+.wrap{max-width:900px;margin:0 auto;padding:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 4px;text-align:center}
+.stat .v{font-size:17px;font-weight:700}.stat .l{color:var(--soft);font-size:11px;margin-top:3px}
+details.card summary{cursor:pointer;font-weight:700;font-size:15px}
+.tools{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-bottom:10px}
+.tools input,.tools select{margin:0}
+.m{position:relative}
+.mh{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.mh b{font-size:15px}.mh small{display:block;color:var(--soft);word-break:break-all;margin-top:2px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:6px;background:#c6cbdb}.dot.on{background:var(--green)}
+.badge{padding:3px 9px;border-radius:99px;color:#fff;font-size:12px;white-space:nowrap}
+.ok{background:var(--green)}.warn{background:var(--orange)}.bad{background:var(--red)}.na{background:var(--soft)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+.g2 div{background:var(--bg);border-radius:8px;padding:6px 8px;font-size:12px}.g2 span{display:block;color:var(--soft);font-size:11px}
+.empty{text-align:center;color:var(--soft);padding:26px}
+</style>
+</head>
+<body>
+<div id="loginScreen"><div class="card">
+  <div class="logo">MG</div><h1>لوحة صاحب البرنامج</h1>
+  <label>باسورد صاحب البرنامج</label>
+  <input id="passInput" type="password" autocomplete="current-password">
+  <button id="loginBtn">دخول</button><div class="err" id="loginErr"></div>
+</div></div>
+
+<div id="app">
+  <div class="top"><div>🔑 لوحة MG — كل العملاء</div>
+    <div class="b"><button id="refreshBtn">🔄</button><button id="logoutBtn">خروج</button></div></div>
+  <div class="wrap">
+    <div class="stats" id="stats"></div>
+    <div class="tools"><input id="q" placeholder="🔍 بحث بالاسم أو الجهاز"><select id="flt">
+      <option value="">الكل</option><option value="on">متصل الآن</option><option value="soon">قريب ينتهي</option><option value="exp">منتهي</option></select></div>
+    <div id="list"></div>
+
+    <details class="card" id="genBox"><summary>🔑 توليد / تجديد أكواد التفعيل (تفعيل + متابعة أونلاين مع بعض)</summary>
+      <label>كود الجهاز</label>
+      <input id="devIdInput" placeholder="A1B2C3D4E5F6" style="direction:ltr">
+      <label>مدة الاشتراك (بتبدأ من انتهاء الاشتراك الحالي لو لسه ساري)</label>
+      <select id="durationSelect"><option value="30">شهر (30 يوم)</option><option value="90">3 شهور</option><option value="180">6 شهور</option>
+        <option value="365" selected>سنة كاملة</option><option value="lifetime">مدى الحياة</option></select>
+      <button id="genCodeBtn">توليد الكودين</button><div class="err" id="genErr"></div>
+      <div id="genResultWrap" style="display:none">
+        <label>كود التفعيل — ابعته للعميل</label>
+        <input id="genResult" readonly style="direction:ltr;font-weight:700">
+        <button id="copyCodeBtn" style="background:var(--orange)">📋 نسخ كود التفعيل</button>
+        <label style="margin-top:14px">كود المتابعة الأونلاين — ابعته للعميل يدخله في الإعدادات ← المتابعة الأونلاين</label>
+        <input id="cloudOut" readonly style="direction:ltr;font-weight:700">
+        <button id="cloudCopy" style="background:var(--orange)">📋 نسخ كود المتابعة</button>
+        <div id="genExpiryLine" style="font-size:12px;color:var(--soft);text-align:center;margin-top:6px"></div>
+      </div>
+    </details>
+
+    <details class="card"><summary>🔒 تغيير الباسورد</summary>
+      <label>الباسورد الجديد</label><input id="newPassInput" type="password" autocomplete="new-password">
+      <label>تأكيد الباسورد</label><input id="newPassConfirm" type="password" autocomplete="new-password">
+      <button id="changePassBtn">تغيير الباسورد</button>
+      <div class="err" id="changePassErr"></div><div id="changePassOk" style="display:none;color:var(--green);text-align:center;font-size:13px">تم ✓</div>
+    </details>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://ndvpovppevjslszplxbu.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kdnBvdnBwZXZqc2xzenBseGJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwMzk2MjAsImV4cCI6MjEwNTYxNTYyMH0.T1FCyNnzISfAQjvRvUagRsv8ecLqM9CDAeEc6IpLAGg";
+let ownerPassword = null, merchants = [], timer = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// السر (LICENSE_SECRET) بقى موجود جوه دالة generate_license_codes على
+// سيرفر Supabase بس — مفيش أي نسخة منه في المتصفح خالص دلوقتي، فمستحيل
+// يتسرّب أو يتغلط فيه وهو بيتكتب.
+// تطبيع موحّد لأي كود جهاز أو كود مُدخل يدوياً: شيل أي حاجة مش رقم/حرف
+// إنجليزي كبير (مسافات، شرطات، حروف صغيرة) — بنفس منطق _normalize_code
+// في mg_pos.py بالظبط، عشان أي فرق شكلي (مش فرق قيمة فعلي) ميبوظش المطابقة.
+const normId = s => String(s || "").trim().toUpperCase().replace(/[^0-9A-Z]/g, "");
+
+// تواريخ الانتهاء اللي اتولّدت من اللوحة دي (احتياطي لو get_owner_overview مبترجعش license_expiry)
+let localExp = {};
+try { localExp = JSON.parse(localStorage.getItem("mg_exp") || "{}"); } catch(e) {}
+const saveExp = () => { try { localStorage.setItem("mg_exp", JSON.stringify(localExp)); } catch(e) {} };
+const expiryOf = m => m.license_expiry ? String(m.license_expiry).slice(0, 10) : (localExp[m.device_id] || "");
+const daysLeft = e => e ? Math.ceil((new Date(e + "T00:00:00").getTime() - Date.now()) / 864e5) : null;
+
+async function rpc(fn, payload){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {method:"POST",
+    headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY,"Authorization":`Bearer ${SUPABASE_ANON_KEY}`},
+    body: JSON.stringify(payload)});
+  return res.json();
+}
+const fmt = n => Number(n||0).toLocaleString("ar-EG",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtDate = iso => { if(!iso) return "-"; try { return new Date(iso).toLocaleString("ar-EG",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}); } catch(e){ return iso; } };
+const online = iso => iso && (Date.now() - new Date(iso).getTime()) < 1800000;
+
+function badge(e){
+  const d = daysLeft(e);
+  if(d === null) return `<span class="badge na">غير معروف</span>`;
+  if(d > 36000) return `<span class="badge ok">مدى الحياة</span>`;
+  if(d < 0) return `<span class="badge bad">منتهي من ${-d} يوم</span>`;
+  return `<span class="badge ${d <= 7 ? "warn" : "ok"}">باقي ${d} يوم</span>`;
+}
+
+$("loginBtn").onclick = doLogin;
+$("passInput").addEventListener("keydown", e => { if(e.key === "Enter") doLogin(); });
+$("logoutBtn").onclick = () => { ownerPassword = null; clearInterval(timer); $("app").style.display = "none"; $("loginScreen").style.display = "flex"; $("passInput").value = ""; };
+$("refreshBtn").onclick = load;
+$("genCodeBtn").onclick = genCode;
+$("changePassBtn").onclick = changePassword;
+$("q").oninput = $("flt").onchange = render;
+$("cloudCopy").onclick = () => { const el = $("cloudOut"); el.select(); navigator.clipboard?.writeText(el.value); };
+$("copyCodeBtn").onclick = () => { const el = $("genResult"); el.select(); navigator.clipboard?.writeText(el.value); };
+
+async function doLogin(){
+  const pw = $("passInput").value, err = $("loginErr"), btn = $("loginBtn");
+  err.textContent = "";
+  if(!pw){ err.textContent = "اكتب الباسورد"; return; }
+  btn.disabled = true; btn.textContent = "جاري الدخول...";
+  try {
+    const data = await rpc("get_owner_overview", {p_owner_password: pw});
+    if(!data.ok){ err.textContent = data.error || "باسورد غير صحيح"; }
+    else {
+      ownerPassword = pw; merchants = data.merchants || [];
+      $("loginScreen").style.display = "none"; $("app").style.display = "block";
+      render(); clearInterval(timer); timer = setInterval(load, 60000);
+    }
+  } catch(e){ err.textContent = "تعذّر الاتصال بالخدمة"; }
+  btn.disabled = false; btn.textContent = "دخول";
+}
+
+async function load(){
+  if(!ownerPassword) return;
+  try { const data = await rpc("get_owner_overview", {p_owner_password: ownerPassword}); if(data.ok){ merchants = data.merchants || []; render(); } } catch(e) {}
+}
+
+function render(){
+  const sum = k => merchants.reduce((a, m) => a + Number(m[k] || 0), 0);
+  const ds = merchants.map(m => daysLeft(expiryOf(m)));
+  const cnt = f => ds.filter(d => d !== null && f(d)).length;
+  $("stats").innerHTML = [
+    ["العملاء", merchants.length], ["متصل الآن", merchants.filter(m => online(m.last_seen_at)).length],
+    ["قريب ينتهي", cnt(d => d >= 0 && d <= 7)], ["منتهي", cnt(d => d < 0)],
+    ["مبيعات اليوم", fmt(sum("today_total"))], ["إجمالي المبيعات", fmt(sum("total_sales"))]
+  ].map(s => `<div class="stat"><div class="v">${s[1]}</div><div class="l">${s[0]}</div></div>`).join("");
+
+  const q = $("q").value.trim().toLowerCase(), f = $("flt").value;
+  const rows = merchants.map(m => ({m, e: expiryOf(m), d: daysLeft(expiryOf(m))})).filter(r => {
+    if(q && !((r.m.store_name || "") + (r.m.username || "") + (r.m.device_id || "")).toLowerCase().includes(q)) return false;
+    if(f === "on") return online(r.m.last_seen_at);
+    if(f === "soon") return r.d !== null && r.d >= 0 && r.d <= 7;
+    if(f === "exp") return r.d !== null && r.d < 0;
+    return true;
+  }).sort((a, b) => (a.d === null) - (b.d === null) || a.d - b.d);
+
+  $("list").innerHTML = rows.length ? rows.map(({m, e}) => `<div class="card m">
+    <div class="mh"><div><b><span class="dot ${online(m.last_seen_at) ? "on" : ""}"></span>${esc(m.store_name || "-")}</b>
+      <small>@${esc(m.username)}</small><small dir="ltr">${esc(m.device_id || "-")}</small></div>${badge(e)}</div>
+    <div class="g2">
+      <div><span>ينتهي الاشتراك</span>${e || "-"}</div><div><span>آخر نشاط</span>${fmtDate(m.last_seen_at)}</div>
+      <div><span>مبيعات اليوم</span>${fmt(m.today_total)}</div><div><span>إجمالي المبيعات</span>${fmt(m.total_sales)}</div>
+      <div><span>عدد الفواتير</span>${esc(m.sales_count)}</div><div><span>المرتجعات</span>${fmt(m.total_returns)}</div>
+      <div><span>تاريخ التفعيل</span>${fmtDate(m.activated_at)}</div><div></div></div>
+    <button class="g" onclick="renew('${esc(m.device_id)}')">🔑 تجديد الأكواد (تفعيل + متابعة)</button></div>`).join("")
+    : `<div class="empty">لا يوجد عملاء</div>`;
+}
+
+function renew(dev){
+  $("devIdInput").value = dev; $("genBox").open = true; $("genResultWrap").style.display = "none";
+  $("genBox").scrollIntoView({behavior: "smooth", block: "start"});
+}
+
+async function genCode(){
+  const devId = normId($("devIdInput").value), err = $("genErr");
+  err.textContent = ""; $("genResultWrap").style.display = "none";
+  if(!devId){ err.textContent = "اكتب كود الجهاز"; return; }
+  if(devId.length !== 12){ err.textContent = "كود الجهاز لازم يكون 12 خانة بالظبط — راجعه (اتلصق ناقص أو زيادة؟)"; return; }
+  const dur = $("durationSelect").value; let expiry;
+  if(dur === "lifetime") expiry = "2099-12-31";
+  else {
+    const m = merchants.find(x => x.device_id === devId);
+    const known = m ? expiryOf(m) : (localExp[devId] || "");
+    const base = known && daysLeft(known) > 0 ? new Date(known + "T00:00:00") : new Date();
+    base.setDate(base.getDate() + parseInt(dur, 10));
+    expiry = base.getFullYear() + "-" + String(base.getMonth() + 1).padStart(2, "0") + "-" + String(base.getDate()).padStart(2, "0");
+  }
+  const btn = $("genCodeBtn"); btn.disabled = true; btn.textContent = "جاري التوليد...";
+  try {
+    // دالة واحدة في Supabase بتولّد كود التفعيل وكود المتابعة الأونلاين
+    // مع بعض بنفس السر ونفس التوكن، وبتسجّل كود المتابعة على السيرفر
+    // أوتوماتيك (owner_set_cloud_license) — مفيش أي حساب أو سر في المتصفح خالص.
+    const data = await rpc("generate_license_codes", {p_owner_password: ownerPassword, p_device_id: devId, p_expiry_date: expiry});
+    if(!data.ok) err.textContent = data.error || "تعذّر توليد الأكواد";
+    else {
+      $("genResult").value = data.activation_code;
+      $("cloudOut").value = data.cloud_code;
+      const cloudNote = data.cloud_registered ? "" : " — تنبيه: كود المتابعة اتولّد لكن مسجّلش على السيرفر (" + (data.cloud_register_error || "خطأ غير معروف") + ")";
+      $("genExpiryLine").textContent = (dur === "lifetime" ? "مدى الحياة" : "صالح لحد: " + expiry) + cloudNote;
+      $("genResultWrap").style.display = "block";
+      localExp[devId] = expiry; saveExp(); render();
+    }
+  } catch(e){ err.textContent = "تعذّر الاتصال بالخدمة"; }
+  btn.disabled = false; btn.textContent = "توليد الكودين";
+}
+
+async function changePassword(){
+  const p1 = $("newPassInput").value, p2 = $("newPassConfirm").value, err = $("changePassErr"), ok = $("changePassOk");
+  err.textContent = ""; ok.style.display = "none";
+  if(!p1 || p1.length < 4){ err.textContent = "4 حروف/أرقام على الأقل"; return; }
+  if(p1 !== p2){ err.textContent = "الباسوردين مش متطابقين"; return; }
+  try {
+    const data = await rpc("change_owner_password", {p_current_password: ownerPassword, p_new_password: p1});
+    if(!data.ok) err.textContent = data.error || "تعذّر تغيير الباسورد";
+    else { ownerPassword = p1; ok.style.display = "block"; $("newPassInput").value = $("newPassConfirm").value = ""; }
+  } catch(e){ err.textContent = "تعذّر الاتصال بالخدمة"; }
+}
+</script>
+</body>
+</html>
